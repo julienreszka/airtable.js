@@ -106,6 +106,10 @@
     getTables();
 
     var deleteArtist = function (record) {
+        var sure = confirm('Are you sure you want to delete ' + record.get('Name') + '?');
+        if (!sure) {
+            return;
+        }
         record.destroy(function (err) {
             if (err) {
                 console.log('Error destroying ', recordId, err);
