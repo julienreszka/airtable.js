@@ -52,10 +52,13 @@
     }
 
     fieldset {
-        border: none;
         margin: 0 auto;
         width: 80%;
         max-width: 600px;
+        border: 2px solid #ccc;
+        border-radius: 5px;
+        padding: 20px;
+        background-color: #f9f9f9;
     }
 
     #inputs {
@@ -70,6 +73,23 @@
         border-radius: 5px;
         padding: 10px;
         font-size: 16px;
+    }
+
+    .datetime-local-wrapper {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 10px;
+    }
+
+    .datetime-local-wrapper label {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .datetime-local-wrapper input {
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
     }
 
     button {
@@ -87,6 +107,11 @@
         background-color: #0051a1;
     }
 
+    #buttonToClearFieldSet {
+        background-color: #cccccc;
+        color: #000;
+    }
+
     .actions-wrapper {
         display: flex;
         gap: 10px;
@@ -97,8 +122,6 @@
         background-color: #ff3b30;
         color: #fff;
     }
-
-
 
 
 
@@ -119,7 +142,7 @@
         /* Add a background color to the thead */
         z-index: 10;
         /* Ensure it sits on top of other elements */
-        box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     }
 
     table,
@@ -193,9 +216,23 @@
         } else if (field.type === "checkbox") {
             return $('<span>').attr('class', 'checkbox-wrapper').append($('<input>').attr('type', 'checkbox').attr('id', getIdOfField(field))).append($('<label>').attr('for', getIdOfField(field)).text(field.name));
         } else if (field.type === "lastModifiedTime") {
-            return $('<input>').attr('type', 'datetime-local').attr('id', getIdOfField(field)).attr('disabled', true);
+            var div = $('<div class="datetime-local-wrapper">');
+            var label = $('<label>').attr('for', getIdOfField(field)).text(field.name);
+            var input = $('<input>').attr('type', 'datetime-local').attr('id', getIdOfField(field)).attr('disabled', true);
+
+            div.append(label);
+            div.append(input);
+
+            return div;
         } else if (field.type === "createdTime") {
-            return $('<input>').attr('type', 'datetime-local').attr('id', getIdOfField(field)).attr('disabled', true);
+            var div = $('<div class="datetime-local-wrapper">');
+            var label = $('<label>').attr('for', getIdOfField(field)).text(field.name);
+            var input = $('<input>').attr('type', 'datetime-local').attr('id', getIdOfField(field)).attr('disabled', true);
+
+            div.append(label);
+            div.append(input);
+
+            return div;
         }
     }
 
