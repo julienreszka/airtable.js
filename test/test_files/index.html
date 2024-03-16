@@ -106,6 +106,8 @@
         updateArtist();
     });
 
+
+
     var clearFieldSet = function () {
         $('#operationTypeUpdate').hide();
         $('#operationTypeCreate').show();
@@ -118,6 +120,8 @@
         $('#artistGenre').val('');
         $('#artistOnDisplay').prop('checked', false);
     };
+
+    clearFieldSet();
 
     $('#buttonToClearFieldSet').click(function () {
         clearFieldSet();
