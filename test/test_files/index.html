@@ -36,7 +36,102 @@
 
 </body>
 
+<style>
+    body {
+        font-family: 'San Francisco', 'Helvetica Neue', Arial, sans-serif;
+        color: #333;
+        background-color: #fff;
+        margin: 0;
+        padding: 0;
+    }
 
+    h1 {
+        font-weight: 300;
+        text-align: center;
+        padding: 20px 0;
+    }
+
+    fieldset {
+        border: none;
+        margin: 0 auto;
+        width: 80%;
+        max-width: 600px;
+    }
+
+    #inputs {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    input,
+    textarea {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        font-size: 16px;
+    }
+
+    button {
+        background-color: #007aff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        font-size: 16px;
+        margin: 10px 0;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0051a1;
+    }
+
+    .button-to-delete,
+    .button-to-edit {
+        margin: 10px;
+    }
+
+    .button-to-delete {
+        background-color: #ff3b30;
+        color: #fff;
+    }
+
+
+
+
+
+    .button-to-delete:hover {
+        background-color: #e32f24;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        background-color: #fff;
+        /* Add a background color to the thead */
+        z-index: 10;
+        /* Ensure it sits on top of other elements */
+    }
+
+    table,
+    th,
+    td {
+        border: 1px solid #ccc;
+    }
+
+    th,
+    td {
+        padding: 10px;
+        text-align: left;
+    }
+</style>
 
 <script>
     // find the apiKey here https://airtable.com/create/tokens it's called a token now
@@ -252,6 +347,7 @@
         $('#artistCreatedAt').val(createdAt)
         var updatedAt = convertTimeForInputWithUTCOffset(record.get('Updated At'));
         $('#artistUpdatedAt').val(updatedAt)
+        window.scrollTo(0, 0);
     }
 
     function convertTimeToHumanReadable(
@@ -278,7 +374,7 @@
         console.log('Retrieved ', record.get('Name'));
 
         var $artistInfo = $('<tr>');
-        $artistInfo.append($('<h3>').text(record.get('Name')));
+        $artistInfo.append($('<td>').text(record.get('Name')));
         $artistInfo.append($('<td>').text(record.get('Bio')));
         $artistInfo.append($('<td>').append($('<ul>').append(record.get('Genre')?.map(g => $('<li>').text(g)))))
         $artistInfo.append($('<td>').append($('<input>').attr('type', 'checkbox').prop('checked', record.get('On Display?')).prop('disabled', true)));
@@ -294,14 +390,14 @@
         } else {
             $artistInfo.append($('<td>')).attr('style', 'min-width: 36px;')
         }
-        var x = $('<button>').text('Delete').click(function () {
-            deleteArtist(record);
-        });
-        var y = $('<button>').text('Edit Record').click(function () {
+        var y = $('<button class="button-to-edit">').text('Edit Record').click(function () {
             editRecord(record);
         });
-        $artistInfo.append(x)
+        var x = $('<button class="button-to-delete">').text('Delete').click(function () {
+            deleteArtist(record);
+        });
         $artistInfo.append(y)
+        $artistInfo.append(x)
         $artistInfo.attr('data-record-id', record.getId());
 
         $('#artists').append($artistInfo);
