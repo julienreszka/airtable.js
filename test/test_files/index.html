@@ -75,7 +75,9 @@
     }
 
     const getIdOfField = (field) => {
-        return field.name.split(' ').map((f) => 'artist' + capitalize(f)).join('');
+        // return 'artist' + capitalize(field.name).replace(/\s/g, '');
+        // replace everything not a letter or number with ''
+        return 'artist' + field.name.replace(/[^a-zA-Z0-9]/g, '');
     }
 
     var renderFieldInput = function (field) {
