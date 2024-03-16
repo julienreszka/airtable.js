@@ -87,10 +87,11 @@
         background-color: #0051a1;
     }
 
-    .button-to-delete,
-    .button-to-edit {
-        margin: 10px;
+    .actions-wrapper {
+        display: flex;
+        gap: 10px;
     }
+
 
     .button-to-delete {
         background-color: #ff3b30;
@@ -118,6 +119,7 @@
         /* Add a background color to the thead */
         z-index: 10;
         /* Ensure it sits on top of other elements */
+        box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
     }
 
     table,
@@ -224,6 +226,7 @@
                 tableFields.forEach(function (field) {
                     $('thead').append($('<th>').text(field));
                 });
+                $('thead').append($('<th>').text('Actions'))
                 genres = data.tables[0]
                     .fields
                     .find(function (field) {
@@ -390,14 +393,19 @@
         } else {
             $artistInfo.append($('<td>')).attr('style', 'min-width: 36px;')
         }
+        var actionsCol = $('<td>');
+        var actions = $('<div class="actions-wrapper">');
+
         var y = $('<button class="button-to-edit">').text('Edit Record').click(function () {
             editRecord(record);
         });
         var x = $('<button class="button-to-delete">').text('Delete').click(function () {
             deleteArtist(record);
         });
-        $artistInfo.append(y)
-        $artistInfo.append(x)
+        actions.append(y)
+        actions.append(x)
+        actionsCol.append(actions);
+        $artistInfo.append(actionsCol);
         $artistInfo.attr('data-record-id', record.getId());
 
         $('#artists').append($artistInfo);
