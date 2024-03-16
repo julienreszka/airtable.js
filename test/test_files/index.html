@@ -20,11 +20,9 @@
             Artist Record
             <span id="recordId"></span>
         </legend>
-        <input type="text" id="artistName" placeholder="Name" />
-        <input type="text" id="artistBio" placeholder="Bio" />
-        <select id="artistGenre" multiple size="3">
-        </select>
-        <input type="checkbox" id="artistOnDisplay" />
+        <div id="inputs">
+        </div>
+        <br>
         <button id='buttonToCreateArtist'>Create</button>
         <button id="buttonToUpdateArtist">Update</button>
         <button id="buttonToClearFieldSet">Clear</button>
@@ -71,6 +69,34 @@
         baseId
     );
 
+    const capitalize = (s) => {
+        if (typeof s !== 'string') return ''
+        return s.charAt(0).toUpperCase() + s.slice(1)
+    }
+
+    const getIdOfField = (field) => {
+        return field.name.split(' ').map((f) => 'artist' + capitalize(f)).join('');
+    }
+
+    var renderFieldInput = function (field) {
+        if (field.type === "singleLineText") {
+            return $('<input>').attr('type', 'text').attr('id', getIdOfField(field)).attr('placeholder', field.name);
+        } else if (field.type === "multilineText") {
+            return $('<textarea>').attr('id', getIdOfField(field)).attr('placeholder', field.name);
+        } else if (field.type === "multipleSelects") {
+            return $('<select>').attr('id', getIdOfField(field)).attr('multiple', true).attr('size', 3);
+        } else if (field.type === "checkbox") {
+            return $('<input>').attr('type', 'checkbox').attr('id', getIdOfField(field));
+        }
+    }
+
+    var renderFieldsInputs = function (fields) {
+        $('#inputs').empty();
+        fields.forEach(function (field) {
+            $('#inputs').append(renderFieldInput(field));
+        });
+    }
+
     var genres = []
     var tableFields = []
     var getTables = function () {
@@ -82,6 +108,7 @@
             },
             success: function (data) {
                 console.log('tables', data);
+                renderFieldsInputs(data.tables[0].fields);
                 tableFields = data.tables[0].fields.map(f => f.name);
                 $('thead').empty();
                 tableFields.forEach(function (field) {
