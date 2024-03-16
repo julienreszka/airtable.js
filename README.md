@@ -37,6 +37,8 @@ Edit `test/test_files/index.html` - put your `BASE_ID` and `API_KEY` (Be careful
 
 Then open <http://localhost:8000/> in your browser.
 
+If you have your token, open <http://localhost:8000/?api_key=secret_token_that_you_generate_here_https://airtable.com/create/tokens> in your browser.
+
 Airtable.js is compatible with browsers supported by the Airtable web app with
 the exception of Safari 10.0. Airtable.js supports Safari 10.1 and higher.
 See the [technical requirements](https://support.airtable.com/hc/en-us/articles/217990018) for more details.
