@@ -28,8 +28,12 @@
         <input type="text" id="artistName" placeholder="Name" />
         <input type="text" id="artistBio" placeholder="Bio" />
         <select id="artistGenre" multiple size="3">
-            <option value="American Abstract Expressionism">American Abstract Expressionism</option>
-            <option value="Color Field">Color Field</option>
+            <option value="American Abstract Expressionism">
+                American Abstract Expressionism
+            </option>
+            <option value="Color Field">
+                Color Field
+            </option>
         </select>
         <input type="checkbox" id="artistOnDisplay" />
         <button id='buttonToCreateArtist'>Create</button>
@@ -83,19 +87,25 @@
     };
 
     var updateArtist = function () {
-        base('Artists').update(selectedRecordId, {
+        var updatedRecord = {
             "Name": $('#artistName').val(),
             "Bio": $('#artistBio').val(),
             "Genre": $('#artistGenre').val(),
             "On Display?": $('#artistOnDisplay').prop('checked')
-        }, function (err, record) {
-            if (err) {
-                console.log('Error updating ', selectedRecordId, err);
-            } else {
-                console.log('Updated ', record.getId());
-                loadArtists();
-            }
-        });
+        }
+        base('Artists')
+            .update(
+                selectedRecordId,
+                updatedRecord
+                , function (err, record) {
+                    if (err) {
+                        console.log('Error updating ', selectedRecordId, err);
+                    } else {
+                        console.log('Updated ', record.getId());
+                        loadArtists();
+                    }
+                }
+            );
     };
 
     $('#buttonToUpdateArtist').click(function () {
@@ -134,59 +144,78 @@
         $('#artistOnDisplay').prop('checked', record.get('On Display?'));
     }
 
+    const renderRecord = function (record) {
+        console.log('Retrieved ', record.get('Name'));
+
+        var $artistInfo = $('<div>');
+        $artistInfo.append($('<h3>').text(record.get('Name')));
+        $artistInfo.append($('<div>').text(record.get('Bio')));
+        $artistInfo.append($('<div>').text(record.get('Genre')?.join(', ')));
+        $artistInfo.append($('<div>').text(record.get('On Display?') ? 'On Display' : 'Not on Display'));
+        var x = $('<button>').text('Delete').click(function () {
+            deleteArtist(record);
+        });
+        var y = $('<button>').text('Edit Record').click(function () {
+            editRecord(record);
+        });
+        $artistInfo.append(x)
+        $artistInfo.append(y)
+        $artistInfo.attr('data-record-id', record.getId());
+
+        $('#artists').append($artistInfo);
+    }
 
     var loadArtists = function () {
         $('#artists').empty();
 
-        base('Artists').select({
-            sort: [
-                { field: 'Name', direction: 'asc' }
-            ]
-        }).eachPage(function page(records, fetchNextPage) {
-            records.forEach(function (record) {
-                console.log('Retrieved ', record.get('Name'));
-
-                var $artistInfo = $('<div>');
-                $artistInfo.append($('<h3>').text(record.get('Name')));
-                $artistInfo.append($('<div>').text(record.get('Bio')));
-                $artistInfo.append($('<div>').text(record.get('Genre')?.join(', ')));
-                $artistInfo.append($('<div>').text(record.get('On Display?') ? 'On Display' : 'Not on Display'));
-                var x = $('<button>').text('Delete').click(function () {
-                    deleteArtist(record);
+        base('Artists')
+            .select({
+                sort: [
+                    { field: 'Name', direction: 'asc' }
+                ]
+            })
+            .eachPage(function page(records, fetchNextPage) {
+                records.forEach(function (record) {
+                    renderRecord(record)
                 });
-                var y = $('<button>').text('Edit Record').click(function () {
-                    editRecord(record);
-                });
-                $artistInfo.append(x)
-                $artistInfo.append(y)
-                $artistInfo.attr('data-record-id', record.getId());
 
-                $('#artists').append($artistInfo);
+                fetchNextPage();
+            }, function done(error) {
+                console.log(error);
             });
-
-            fetchNextPage();
-        }, function done(error) {
-            console.log(error);
-        });
     };
 
+    var loadGenres = function () {
+
+        var b = base('Artists')
+        console.log(b)
+
+    }
+
+
     $('#buttonToCreateArtist').click(function () {
-        base('Artists').create({
+        var newRecord = {
             "Name": $('#artistName').val(),
             "Bio": $('#artistBio').val(),
             "Genre": $('#artistGenre').val(),
             "On Display?": $('#artistOnDisplay').prop('checked')
-        }, function (err, record) {
-            if (err) {
-                console.log('Error updating ', selectedRecordId, err);
-            } else {
-                console.log('Updated ', record.getId());
-                loadArtists();
-            }
-        });
+        }
+        base('Artists')
+            .create(
+                newRecord
+                , function (err, record) {
+                    if (err) {
+                        console.log('Error updating ', selectedRecordId, err);
+                    } else {
+                        console.log('Updated ', record.getId());
+                        loadArtists();
+                    }
+                }
+            );
     });
 
     loadArtists();
+    loadGenres();
 
 </script>
 
