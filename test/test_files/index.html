@@ -289,7 +289,8 @@
         var files = record.get('files');
         if (files?.length > 0) {
             var imgUrl = files[0]?.thumbnails?.small?.url;
-            $artistInfo.append($('<td>').append($('<img>').attr('src', imgUrl)).attr('style', 'min-width: 36px;'))
+            var imgUrlLarge = files[0]?.thumbnails?.large?.url;
+            $artistInfo.append($('<td>').append($(`<a target="blank" href=${imgUrlLarge}><img src="${imgUrl}"></a>`)))
         } else {
             $artistInfo.append($('<td>')).attr('style', 'min-width: 36px;')
         }
