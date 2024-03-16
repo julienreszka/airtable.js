@@ -285,6 +285,9 @@
         $artistInfo.append($('<td>').text(createdAt));
         var updatedAt = convertTimeToHumanReadable(record.get('Updated At'));
         $artistInfo.append($('<td>').text(updatedAt));
+        var imgUrl = record.get('files')[0]?.thumbnails?.small?.url;
+        console.log('imgUrl', imgUrl);
+        $artistInfo.append($('<td>')).append($('<img>').attr('src', imgUrl));
         var x = $('<button>').text('Delete').click(function () {
             deleteArtist(record);
         });
