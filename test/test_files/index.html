@@ -245,42 +245,45 @@
 
     var genres = []
     var tableFields = []
-    var getTables = function () {
-        $.ajax({
+    var tableFieldsNames = []
+
+    // https://airtable.com/developers/web/api/get-base-schema
+    // curl "https://api.airtable.com/v0/meta/bases/{baseId}/tables" \-H "Authorization: Bearer YOUR_TOKEN"
+
+    var getTables = async function () {
+        let data = await $.ajax({
             url: 'https://api.airtable.com/v0/meta/bases/' + baseId + '/tables',
             type: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + apiKey
-            },
-            success: function (data) {
-                console.log('tables', data);
-                renderFieldsInputs(data.tables[0].fields);
-                tableFields = data.tables[0].fields.map(f => f.name);
-                if (!tableFields.includes('Updated At')) {
-                    alert('You must have an "Updated At" field in your table otherwise this example will not work.');
-                }
-                $('thead').empty();
-                tableFields.forEach(function (field) {
-                    $('thead').append($('<th>').text(field));
-                });
-                $('thead').append($('<th>').text('Actions'))
-                genres = data.tables[0]
-                    .fields
-                    .find(function (field) {
-                        return field.name === 'Genre';
-                    })
-                    ?.options.choices.map(c => c.name);
-                console.log('genres', genres);
-                $('#artistGenre').empty();
-                genres.forEach(function (genre) {
-                    $('#artistGenre').append($('<option>').val(genre).text(genre));
-                });
-
             }
+        });
+
+        console.log('tables', data);
+        renderFieldsInputs(data.tables[0].fields);
+        tableFields = data.tables[0].fields;
+        tableFieldsNames = data.tables[0].fields.map(f => f.name);
+        if (!tableFieldsNames.includes('Updated At')) {
+            alert('You must have an "Updated At" field in your table otherwise this example will not work.');
+        }
+        $('thead').empty();
+        tableFieldsNames.forEach(function (field) {
+            $('thead').append($('<th>').text(field));
+        });
+        $('thead').append($('<th>').text('Actions'))
+        genres = data.tables[0]
+            .fields
+            .find(function (field) {
+                return field.name === 'Genre';
+            })
+            ?.options.choices.map(c => c.name);
+        console.log('genres', genres);
+        $('#artistGenre').empty();
+        genres.forEach(function (genre) {
+            $('#artistGenre').append($('<option>').val(genre).text(genre));
         });
     }
 
-    getTables();
 
     var deleteArtist = function (record) {
         var sure = confirm('Are you sure you want to delete ' + record.get('Name') + '?');
@@ -313,7 +316,7 @@
                         console.log('Error updating ', selectedRecordId, err);
                     } else {
                         console.log('Updated ', record.getId());
-                        loadArtists();
+                        rerender()
                     }
                 }
             );
@@ -409,30 +412,65 @@
         );
     }
 
+    const renderCell = function (record, field) {
+        if (field.type === 'singleLineText') {
+            var cell = $('<td>').text(record.get(field.name));
+            return cell
+        }
+        else if (
+            field.type === 'multilineText'
+        ) {
+            var cell = $('<td>').text(record.get(field.name));
+            return cell
+        }
+        else if (
+            field.type === 'multipleSelects'
+        ) {
+            var cell = $('<td>').append($('<ul>').append(record.get(field.name)?.map(g => $('<li>').text(g))))
+            return cell
+        } else if (
+            field.type === 'checkbox'
+        ) {
+            var cell = $('<td>').append($('<input>').attr('type', 'checkbox').prop('checked', record.get(field.name)).prop('disabled', true));
+            return cell
+        } else if (
+            field.type === 'lastModifiedTime'
+        ) {
+            var cell = $('<td>').text(convertTimeToHumanReadable(record.get(field.name)));
+            return cell
+        } else if (
+            field.type === 'createdTime'
+        ) {
+            var cell = $('<td>').text(convertTimeToHumanReadable(record.get(field.name)));
+            return cell
+        } else if (
+            field.type === 'multipleAttachments'
+        ) {
+            var files = record.get(field.name);
+            if (files?.length > 0) {
+                var imgUrl = files[0]?.thumbnails?.small?.url;
+                var imgUrlLarge = files[0]?.thumbnails?.large?.url;
+                var cell = $('<td>').append($(`<a target="blank" href=${imgUrlLarge}><img src="${imgUrl}"></a>`))
+                return cell
+            } else {
+                var cell = $('<td>').attr('style', 'min-width: 36px;');
+                return cell
+            }
+        } else {
+            return $('<td>')
+        }
+    }
+
 
     const renderRecord = function (record) {
         console.log('Retrieved ', record.get('Name'));
 
         var $artistInfo = $('<tr>');
-        $artistInfo.append($('<td>').text(record.get('Name')));
-        $artistInfo.append($('<td>').text(record.get('Bio')));
-        $artistInfo.append($('<td>').append($('<ul>').append(record.get('Genre')?.map(g => $('<li>').text(g)))))
-        $artistInfo.append($('<td>').append($('<input>').attr('type', 'checkbox').prop('checked', record.get('On Display?')).prop('disabled', true)));
-        var createdAt = convertTimeToHumanReadable(record.get('Created At'));
-        $artistInfo.append($('<td>').text(createdAt));
-        var updatedAt = convertTimeToHumanReadable(record.get('Updated At'));
-        $artistInfo.append($('<td>').text(updatedAt));
-        var files = record.get('files');
-        if (files?.length > 0) {
-            var imgUrl = files[0]?.thumbnails?.small?.url;
-            var imgUrlLarge = files[0]?.thumbnails?.large?.url;
-            $artistInfo.append($('<td>').append($(`<a target="blank" href=${imgUrlLarge}><img src="${imgUrl}"></a>`)))
-        } else {
-            $artistInfo.append($('<td>')).attr('style', 'min-width: 36px;')
+        for (var i = 0; i < tableFields.length; i++) {
+            $artistInfo.append(renderCell(record, tableFields[i]))
         }
         var actionsCol = $('<td>');
         var actions = $('<div class="actions-wrapper">');
-
         var y = $('<button class="button-to-edit">').text('Edit Record').click(function () {
             editRecord(record);
         });
@@ -448,27 +486,43 @@
         $('#artists').append($artistInfo);
     }
 
-    var loadArtists = function () {
+    var recordsList = []
+
+    var loadArtists = async function () {
         $('#artists').empty();
-
-        base('Artists')
-            .select({
-                sort: [
-                    { field: 'Updated At', direction: 'desc' }
-                ]
-            })
-            .eachPage(function page(records, fetchNextPage) {
-                records.forEach(function (record) {
-                    renderRecord(record)
+        return new Promise((resolve, reject) => {
+            base('Artists')
+                .select({
+                    sort: [
+                        { field: 'Updated At', direction: 'desc' }
+                    ],
+                    // pageSize: 10,
+                })
+                .eachPage(async function page(records, fetchNextPage) {
+                    try {
+                        recordsList = [...recordsList, ...records]
+                        fetchNextPage();
+                    } catch (error) {
+                        console.error(error)
+                        reject(error)
+                    }
+                }, function done(error) {
+                    if (error) {
+                        console.log('Error fetching records', error);
+                        reject(error)
+                    } else {
+                        console.log('Retrieved ', recordsList.length, ' records');
+                        resolve(recordsList)
+                    }
                 });
-
-                fetchNextPage();
-            }, function done(error) {
-                console.log(error);
-            });
+        });
     };
 
-
+    const renderRecords = function () {
+        recordsList.forEach(function (record) {
+            renderRecord(record);
+        });
+    }
 
 
     $('#buttonToCreateArtist').click(function () {
@@ -487,18 +541,35 @@
                         alert('Error creating record: ' + err)
                     } else {
                         console.log('Updated ', record.getId());
-                        loadArtists();
+                        rerender();
                     }
                 },
 
             );
     });
 
-    loadArtists();
+    const rerender = async function () {
+        try {
+            recordsList = []
+            await loadArtists();
+            await renderRecords()
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
-    // https://airtable.com/developers/web/api/get-base-schema
-    // curl "https://api.airtable.com/v0/meta/bases/{baseId}/tables" \-H "Authorization: Bearer YOUR_TOKEN"
+    const init = async function () {
+        try {
+            await getTables();
+            rerender()
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
+
+
+    init()
 
 
 </script>
