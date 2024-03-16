@@ -28,12 +28,6 @@
         <input type="text" id="artistName" placeholder="Name" />
         <input type="text" id="artistBio" placeholder="Bio" />
         <select id="artistGenre" multiple size="3">
-            <option value="American Abstract Expressionism">
-                American Abstract Expressionism
-            </option>
-            <option value="Color Field">
-                Color Field
-            </option>
         </select>
         <input type="checkbox" id="artistOnDisplay" />
         <button id='buttonToCreateArtist'>Create</button>
@@ -185,12 +179,7 @@
             });
     };
 
-    var loadGenres = function () {
 
-        var b = base('Artists')
-        console.log(b)
-
-    }
 
 
     $('#buttonToCreateArtist').click(function () {
@@ -215,7 +204,36 @@
     });
 
     loadArtists();
-    loadGenres();
+
+    // https://airtable.com/developers/web/api/get-base-schema
+    // curl "https://api.airtable.com/v0/meta/bases/{baseId}/tables" \-H "Authorization: Bearer YOUR_TOKEN"
+
+    var genres = []
+    var getTables = function () {
+        $.ajax({
+            url: 'https://api.airtable.com/v0/meta/bases/' + baseId + '/tables',
+            type: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + apiKey
+            },
+            success: function (data) {
+                console.log('tables', data);
+                genres = data.tables[0]
+                    .fields
+                    .find(function (field) {
+                        return field.name === 'Genre';
+                    })
+                    ?.options.choices.map(c => c.name);
+                console.log('genres', genres);
+                $('#artistGenre').empty();
+                genres.forEach(function (genre) {
+                    $('#artistGenre').append($('<option>').val(genre).text(genre));
+                });
+            }
+        });
+    }
+
+    getTables();
 
 </script>
 
