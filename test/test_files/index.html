@@ -156,6 +156,11 @@
         padding: 10px;
         text-align: left;
     }
+
+    .images-wrapper {
+        display: flex;
+        gap: 10px;
+    }
 </style>
 
 <script>
@@ -448,13 +453,19 @@
         ) {
             var files = record.get(field.name);
             if (files?.length > 0) {
-                var imgUrl = files[0]?.thumbnails?.small?.url;
-                var imgUrlLarge = files[0]?.thumbnails?.large?.url;
-                var cell = $('<td>').append($(`<a target="blank" href=${imgUrlLarge}><img src="${imgUrl}"></a>`))
-                return cell
+                var cell = $('<td>')
+                var imagesWrapper = $('<div class="images-wrapper">');
+                cell.append(imagesWrapper);
+                for (var i = 0; i < files.length; i++) {
+                    var url = files[i]?.url;
+                    var imgUrl = files[i]?.thumbnails?.small?.url;
+                    var imgUrlLarge = files[i]?.thumbnails?.large?.url;
+                    imagesWrapper.append($(`<a target="blank" href=${url}><img src="${imgUrl}"></a>`));
+                }
+                return cell;
             } else {
                 var cell = $('<td>').attr('style', 'min-width: 36px;');
-                return cell
+                return cell;
             }
         } else {
             return $('<td>')
