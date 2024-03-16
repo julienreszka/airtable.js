@@ -112,6 +112,9 @@
                 console.log('tables', data);
                 renderFieldsInputs(data.tables[0].fields);
                 tableFields = data.tables[0].fields.map(f => f.name);
+                if (!tableFields.includes('Updated At')) {
+                    alert('You must have an "Updated At" field in your table otherwise this example will not work.');
+                }
                 $('thead').empty();
                 tableFields.forEach(function (field) {
                     $('thead').append($('<th>').text(field));
@@ -221,6 +224,8 @@
         // TODO instead of join make a ul li list of genres
         $artistInfo.append($('<td>').append($('<ul>').append(record.get('Genre')?.map(g => $('<li>').text(g)))))
         $artistInfo.append($('<td>').append($('<input>').attr('type', 'checkbox').prop('checked', record.get('On Display?')).prop('disabled', true)));
+        $artistInfo.append($('<td>').text(record.get('Created At')));
+        $artistInfo.append($('<td>').text(record.get('Updated At')));
         var x = $('<button>').text('Delete').click(function () {
             deleteArtist(record);
         });
@@ -240,7 +245,7 @@
         base('Artists')
             .select({
                 sort: [
-                    { field: 'Name', direction: 'asc' }
+                    { field: 'Updated At', direction: 'desc' }
                 ]
             })
             .eachPage(function page(records, fetchNextPage) {
@@ -270,11 +275,13 @@
                 , function (err, record) {
                     if (err) {
                         console.log('Error updating ', selectedRecordId, err);
+                        alert('Error creating record: ' + err)
                     } else {
                         console.log('Updated ', record.getId());
                         loadArtists();
                     }
-                }
+                },
+
             );
     });
 
