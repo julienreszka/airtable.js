@@ -225,7 +225,8 @@
 
     var selectedRecordId = null;
 
-    function convertTimeForInputWithUTCOffset(dateTimeString
+    function convertTimeForInputWithUTCOffset(
+        dateTimeString
         // example: 2024-03-16T19:53:46.000Z
     ) {
         const date = new Date(dateTimeString);
@@ -265,7 +266,10 @@
         $('#artistUpdatedAt').val(updatedAt)
     }
 
-    function convertTimeToHumanReadable(dateTimeString) {
+    function convertTimeToHumanReadable(
+        dateTimeString
+        // example: 2024-03-16T19:53:46.000Z
+    ) {
         const date = new Date(dateTimeString);
         const options = {
             year: 'numeric',
@@ -287,8 +291,6 @@
         var $artistInfo = $('<tr>');
         $artistInfo.append($('<h3>').text(record.get('Name')));
         $artistInfo.append($('<td>').text(record.get('Bio')));
-        // $artistInfo.append($('<td>').text(record.get('Genre')?.join(', ')));
-        // TODO instead of join make a ul li list of genres
         $artistInfo.append($('<td>').append($('<ul>').append(record.get('Genre')?.map(g => $('<li>').text(g)))))
         $artistInfo.append($('<td>').append($('<input>').attr('type', 'checkbox').prop('checked', record.get('On Display?')).prop('disabled', true)));
         var createdAt = convertTimeToHumanReadable(record.get('Created At'));
