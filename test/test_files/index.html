@@ -8,12 +8,7 @@
 
 <body>
     <h1>Artists</h1>
-    <div id="artists"></div>
-
     <hr />
-
-    <div id="created"></div>
-    <!-- TODO UI to update artist -->
     <fieldset>
         <legend>
             <span id="operationTypeUpdate">
@@ -34,6 +29,13 @@
         <button id="buttonToUpdateArtist">Update</button>
         <button id="buttonToClearFieldSet">Clear</button>
     </fieldset>
+    <hr />
+    <table>
+        <thead id="artistTableHead"></thead>
+        <tbody id="artists"></tbody>
+    </table>
+    <hr>
+
 </body>
 
 
@@ -69,13 +71,47 @@
         baseId
     );
 
+    var genres = []
+    var tableFields = []
+    var getTables = function () {
+        $.ajax({
+            url: 'https://api.airtable.com/v0/meta/bases/' + baseId + '/tables',
+            type: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + apiKey
+            },
+            success: function (data) {
+                console.log('tables', data);
+                tableFields = data.tables[0].fields.map(f => f.name);
+                $('thead').empty();
+                tableFields.forEach(function (field) {
+                    $('thead').append($('<th>').text(field));
+                });
+                genres = data.tables[0]
+                    .fields
+                    .find(function (field) {
+                        return field.name === 'Genre';
+                    })
+                    ?.options.choices.map(c => c.name);
+                console.log('genres', genres);
+                $('#artistGenre').empty();
+                genres.forEach(function (genre) {
+                    $('#artistGenre').append($('<option>').val(genre).text(genre));
+                });
+
+            }
+        });
+    }
+
+    getTables();
+
     var deleteArtist = function (record) {
         record.destroy(function (err) {
             if (err) {
                 console.log('Error destroying ', recordId, err);
             } else {
                 console.log('Destroyed ', record.getId());
-                $('div[data-record-id="' + record.getId() + '"]').remove();
+                $('[data-record-id="' + record.getId() + '"]').remove();
             }
         });
     };
@@ -145,11 +181,13 @@
     const renderRecord = function (record) {
         console.log('Retrieved ', record.get('Name'));
 
-        var $artistInfo = $('<div>');
+        var $artistInfo = $('<tr>');
         $artistInfo.append($('<h3>').text(record.get('Name')));
-        $artistInfo.append($('<div>').text(record.get('Bio')));
-        $artistInfo.append($('<div>').text(record.get('Genre')?.join(', ')));
-        $artistInfo.append($('<div>').text(record.get('On Display?') ? 'On Display' : 'Not on Display'));
+        $artistInfo.append($('<td>').text(record.get('Bio')));
+        // $artistInfo.append($('<td>').text(record.get('Genre')?.join(', ')));
+        // TODO instead of join make a ul li list of genres
+        $artistInfo.append($('<td>').append($('<ul>').append(record.get('Genre')?.map(g => $('<li>').text(g)))))
+        $artistInfo.append($('<td>').append($('<input>').attr('type', 'checkbox').prop('checked', record.get('On Display?')).prop('disabled', true)));
         var x = $('<button>').text('Delete').click(function () {
             deleteArtist(record);
         });
@@ -212,32 +250,7 @@
     // https://airtable.com/developers/web/api/get-base-schema
     // curl "https://api.airtable.com/v0/meta/bases/{baseId}/tables" \-H "Authorization: Bearer YOUR_TOKEN"
 
-    var genres = []
-    var getTables = function () {
-        $.ajax({
-            url: 'https://api.airtable.com/v0/meta/bases/' + baseId + '/tables',
-            type: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + apiKey
-            },
-            success: function (data) {
-                console.log('tables', data);
-                genres = data.tables[0]
-                    .fields
-                    .find(function (field) {
-                        return field.name === 'Genre';
-                    })
-                    ?.options.choices.map(c => c.name);
-                console.log('genres', genres);
-                $('#artistGenre').empty();
-                genres.forEach(function (genre) {
-                    $('#artistGenre').append($('<option>').val(genre).text(genre));
-                });
-            }
-        });
-    }
 
-    getTables();
 
 </script>
 
