@@ -36,6 +36,22 @@
 
 </body>
 
+<style>
+    #inputs {
+        display: flex;
+        flex-direction: row;
+        align-items: start;
+    }
+
+    .checkbox-wrapper {
+        border: 1px solid #000;
+    }
+
+    .checkbox-wrapper input {
+        margin-right: 10px;
+    }
+</style>
+
 
 <script>
     // find the apiKey here https://airtable.com/create/tokens it's called a token now
@@ -88,7 +104,9 @@
         } else if (field.type === "multipleSelects") {
             return $('<select>').attr('id', getIdOfField(field)).attr('multiple', true).attr('size', 3);
         } else if (field.type === "checkbox") {
-            return $('<input>').attr('type', 'checkbox').attr('id', getIdOfField(field));
+            // return $('<input>').attr('type', 'checkbox').attr('id', getIdOfField(field))
+            // TODO make a checkbox with a label
+            return $('<span>').attr('class', 'checkbox-wrapper').append($('<input>').attr('type', 'checkbox').attr('id', getIdOfField(field))).append($('<label>').attr('for', getIdOfField(field)).text(field.name));
         } else if (field.type === "lastModifiedTime") {
             return $('<input>').attr('type', 'datetime-local').attr('id', getIdOfField(field)).attr('disabled', true);
         } else if (field.type === "createdTime") {
