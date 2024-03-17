@@ -119,6 +119,12 @@
         font-size: 16px;
     }
 
+    .checkbox-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
     .textarea-wrapper {
         display: flex;
         flex-direction: column;
@@ -480,6 +486,19 @@
             div.append(input);
 
             return div;
+        } else if (field.type === "dateTime") {
+            var div = $('<div class="datetime-local-wrapper">');
+            var label = $('<label>')
+                .attr('for', getIdOfField(field))
+                .text(field.name);
+            var input = $('<input>').attr('type', 'datetime-local')
+                .attr('id', getIdOfField(field))
+                .attr('disabled', false);
+
+            div.append(label);
+            div.append(input);
+
+            return div;
         }
     }
 
@@ -582,12 +601,43 @@
         $('#buttonToCreateArtist').show();
         selectedRecordId = null;
         $('#recordId').text('');
-        $('#artistName').val('');
-        $('#artistBio').val('');
-        $('#artistGenre').val('');
-        $('#artistOnDisplay').prop('checked', false);
-        $('#artistCreatedAt').val('');
-        $('#artistUpdatedAt').val('');
+        // clear all inputs in a loop
+        for (var i = 0; i < tableFields.length; i++) {
+            var field = tableFields[i];
+            if (field.type === 'singleLineText') {
+                $('#' + getIdOfField(field)).val('');
+            }
+            else if (
+                field.type === 'multilineText'
+            ) {
+                $('#' + getIdOfField(field)).val('');
+            }
+            else if (
+                field.type === 'multipleSelects'
+            ) {
+                $('#' + getIdOfField(field)).val('');
+            } else if (
+                field.type === 'checkbox'
+            ) {
+                $('#' + getIdOfField(field)).prop('checked', false);
+            } else if (
+                field.type === 'lastModifiedTime'
+            ) {
+                $('#' + getIdOfField(field)).val('');
+            } else if (
+                field.type === 'createdTime'
+            ) {
+                $('#' + getIdOfField(field)).val('');
+            } else if (
+                field.type === 'dateTime'
+            ) {
+                $('#' + getIdOfField(field)).val('');
+            } else if (
+                field.type === 'multipleAttachments'
+            ) {
+                $('#' + getIdOfField(field)).val('');
+            }
+        }
     };
 
     clearFieldSet();
@@ -639,6 +689,34 @@
         $('#artistUpdatedAt').val(updatedAt)
         window.scrollTo(0, 0);
     }
+
+    const createArtist = function () {
+        var newRecord = {
+            "Name": $('#artistName').val(),
+            "Bio": $('#artistBio').val(),
+            "Genre": $('#artistGenre').val(),
+            "On Display?": $('#artistOnDisplay').prop('checked'),
+            "Birthdate": $('#artistBirthdate').val() || undefined,
+        }
+        base('Artists')
+            .create(
+                newRecord
+                , function (err, record) {
+                    if (err) {
+                        console.log('Error updating ', selectedRecordId, err);
+                        alert('Error creating record: ' + err)
+                    } else {
+                        console.log('Updated ', record.getId());
+                        rerender();
+                    }
+                },
+
+            );
+    };
+
+    $('#buttonToCreateArtist').click(function () {
+        createArtist();
+    });
 
     function convertTimeToHumanReadable(
         dateTimeString
@@ -701,6 +779,12 @@
             return cell
         } else if (
             field.type === 'createdTime'
+        ) {
+            var cell = $('<td>').text(convertTimeToHumanReadable(record.get(field.name)));
+            return cell
+
+        } else if (
+            field.type === 'dateTime' && record.get(field.name)
         ) {
             var cell = $('<td>').text(convertTimeToHumanReadable(record.get(field.name)));
             return cell
@@ -792,28 +876,6 @@
     }
 
 
-    $('#buttonToCreateArtist').click(function () {
-        var newRecord = {
-            "Name": $('#artistName').val(),
-            "Bio": $('#artistBio').val(),
-            "Genre": $('#artistGenre').val(),
-            "On Display?": $('#artistOnDisplay').prop('checked')
-        }
-        base('Artists')
-            .create(
-                newRecord
-                , function (err, record) {
-                    if (err) {
-                        console.log('Error updating ', selectedRecordId, err);
-                        alert('Error creating record: ' + err)
-                    } else {
-                        console.log('Updated ', record.getId());
-                        rerender();
-                    }
-                },
-
-            );
-    });
 
     const rerender = async function () {
         try {
