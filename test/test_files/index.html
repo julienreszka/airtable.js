@@ -75,6 +75,16 @@
         font-size: 16px;
     }
 
+    .input-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .input-wrapper label {
+        font-weight: bold;
+    }
+
     .datetime-local-wrapper {
         display: flex;
         flex-direction: column;
@@ -90,6 +100,33 @@
         padding: 5px;
         border: 1px solid #ccc;
         border-radius: 4px;
+    }
+
+    .select-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .select-wrapper label {
+        font-weight: bold;
+    }
+
+    .select-wrapper select {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    .textarea-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .textarea-wrapper label {
+        font-weight: bold;
     }
 
     button {
@@ -375,20 +412,40 @@
 
     var renderFieldInput = function (field) {
         if (field.type === "singleLineText") {
-            return $('<input>').attr('type', 'text')
-                .attr('id', getIdOfField(field))
-                .attr('placeholder', field.name);
-        } else if (field.type === "multilineText") {
-            return $('<textarea>')
-                .attr('id', getIdOfField(field))
-                .attr('placeholder', field.name);
-        } else if (field.type === "multipleSelects") {
-            return $('<select>')
-                .attr('id', getIdOfField(field))
-                .attr('multiple', true)
-                .attr('size',
-                    field.options.choices.length
+            return $('<div>')
+                .attr('class', 'input-wrapper')
+                .append($('<label>')
+                    .attr('for', getIdOfField(field))
+                    .text(field.name)
                 )
+                .append($('<input>')
+                    .attr('type', 'text')
+                    .attr('id', getIdOfField(field))
+                    .attr('placeholder', field.name)
+                );
+        } else if (field.type === "multilineText") {
+            return $('<div>')
+                .attr('class', 'textarea-wrapper')
+                .append($('<label>')
+                    .attr('for', getIdOfField(field))
+                    .text(field.name)
+                )
+                .append($('<textarea>')
+                    .attr('id', getIdOfField(field))
+                    .attr('placeholder', field.name)
+                );
+        } else if (field.type === "multipleSelects") {
+            var selectWrapper = $('<div>').attr('class', 'select-wrapper')
+                .append($('<label>')
+                    .attr('for', getIdOfField(field))
+                    .text(field.name)
+                )
+                .append($('<select>')
+                    .attr('id', getIdOfField(field))
+                    .attr('multiple', true)
+                    .attr('size', field.options.choices.length)
+                );
+            return selectWrapper;
         } else if (field.type === "checkbox") {
             return $('<span>')
                 .attr('class', 'checkbox-wrapper')
