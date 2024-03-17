@@ -567,13 +567,33 @@
     };
 
     var updateArtist = function () {
-        var updatedRecord = {
-            "Name": $('#artistName').val(),
-            "Bio": $('#artistBio').val(),
-            "Genre": $('#artistGenre').val(),
-            "On Display?": $('#artistOnDisplay').prop('checked'),
-            "Birthdate": $('#artistBirthdate').val() || undefined
+        // generate updated record from inputs
+        var updatedRecord = {}
+        for (var i = 0; i < tableFields.length; i++) {
+            var field = tableFields[i];
+            if (field.type === 'singleLineText') {
+                updatedRecord[field.name] = $('#' + getIdOfField(field)).val();
+            }
+            else if (
+                field.type === 'multilineText'
+            ) {
+                updatedRecord[field.name] = $('#' + getIdOfField(field)).val();
+            }
+            else if (
+                field.type === 'multipleSelects'
+            ) {
+                updatedRecord[field.name] = $('#' + getIdOfField(field)).val();
+            } else if (
+                field.type === 'checkbox'
+            ) {
+                updatedRecord[field.name] = $('#' + getIdOfField(field)).prop('checked');
+            } else if (
+                field.type === 'dateTime'
+            ) {
+                updatedRecord[field.name] = $('#' + getIdOfField(field)).val() || undefined;
+            }
         }
+
         base('Artists')
             .update(
                 selectedRecordId,
