@@ -23,7 +23,7 @@
         <div id="inputs">
         </div>
         <br>
-        <button id='buttonToCreateArtist'>Create</button>
+        <button id='buttonToCreateRecord'>Create</button>
         <button id="buttonToUpdateRecord">Update</button>
         <button id="buttonToClearFieldSet">Clear</button>
     </fieldset>
@@ -198,6 +198,20 @@
     td {
         padding: 10px;
         text-align: left;
+    }
+
+    /* TODO add variable for fixed column size */
+    :root {
+        --fixed-column-size: 200px;
+    }
+
+
+    td:nth-of-type(1),
+    th:nth-of-type(1) {
+        position: sticky;
+        background: lightgoldenrodyellow;
+        /* min-width: var(--fixed-column-size); */
+        left: 0;
     }
 
     .images-wrapper {
@@ -619,7 +633,7 @@
         $('#operationTypeUpdate').hide();
         $('#operationTypeCreate').show();
         $('#buttonToUpdateRecord').hide();
-        $('#buttonToCreateArtist').show();
+        $('#buttonToCreateRecord').show();
         selectedRecordId = null;
         $('#recordId').text('');
         // clear all inputs in a loop
@@ -697,7 +711,7 @@
         $('#operationTypeUpdate').show();
         $('#operationTypeCreate').hide();
         $('#buttonToUpdateRecord').show();
-        $('#buttonToCreateArtist').hide();
+        $('#buttonToCreateRecord').hide();
         selectedRecordId = record.getId();
         $('#recordId').text(selectedRecordId);
         // set all inputs in a loop
@@ -740,7 +754,7 @@
         window.scrollTo(0, 0);
     }
 
-    const createArtist = function () {
+    const createRecord = function () {
         var newRecord = {
             "Name": $('#artistName').val(),
             "Bio": $('#artistBio').val(),
@@ -764,8 +778,8 @@
             );
     };
 
-    $('#buttonToCreateArtist').click(function () {
-        createArtist();
+    $('#buttonToCreateRecord').click(function () {
+        createRecord();
     });
 
     function convertTimeToHumanReadable(
