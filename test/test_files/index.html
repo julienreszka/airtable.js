@@ -161,14 +161,14 @@
     }
 
 
-    .button-to-delete {
+    .button-to-delete-record {
         background-color: #ff3b30;
         color: #fff;
     }
 
 
 
-    .button-to-delete:hover {
+    .button-to-delete-record:hover {
         background-color: #e32f24;
     }
 
@@ -551,7 +551,7 @@
     }
 
 
-    var deleteArtist = function (record) {
+    var deleteRecord = function (record) {
         var sure = confirm('Are you sure you want to delete ' + record.get('Name') + '?');
         if (!sure) {
             return;
@@ -872,11 +872,11 @@
         }
         var actionsCol = $('<td>');
         var actions = $('<div class="actions-wrapper">');
-        var y = $('<button class="button-to-edit">').text('Edit Record').click(function () {
+        var y = $('<button class="button-to-edit-record">').text('Edit Record').click(function () {
             editRecord(record);
         });
-        var x = $('<button class="button-to-delete">').text('Delete').click(function () {
-            deleteArtist(record);
+        var x = $('<button class="button-to-delete-record">').text('Delete').click(function () {
+            deleteRecord(record);
         });
         actions.append(y)
         actions.append(x)
