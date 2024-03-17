@@ -571,7 +571,8 @@
             "Name": $('#artistName').val(),
             "Bio": $('#artistBio').val(),
             "Genre": $('#artistGenre').val(),
-            "On Display?": $('#artistOnDisplay').prop('checked')
+            "On Display?": $('#artistOnDisplay').prop('checked'),
+            "Birthdate": $('#artistBirthdate').val() || undefined
         }
         base('Artists')
             .update(
@@ -679,14 +680,43 @@
         $('#buttonToCreateArtist').hide();
         selectedRecordId = record.getId();
         $('#recordId').text(selectedRecordId);
-        $('#artistName').val(record.get('Name'));
-        $('#artistBio').val(record.get('Bio'));
-        $('#artistGenre').val(record.get('Genre'));
-        $('#artistOnDisplay').prop('checked', record.get('On Display?'));
-        var createdAt = convertTimeForInputWithUTCOffset(record.get('Created At'));
-        $('#artistCreatedAt').val(createdAt)
-        var updatedAt = convertTimeForInputWithUTCOffset(record.get('Updated At'));
-        $('#artistUpdatedAt').val(updatedAt)
+        // set all inputs in a loop
+        for (var i = 0; i < tableFields.length; i++) {
+            var field = tableFields[i];
+            if (field.type === 'singleLineText') {
+                $('#' + getIdOfField(field)).val(record.get(field.name));
+            }
+            else if (
+                field.type === 'multilineText'
+            ) {
+                $('#' + getIdOfField(field)).val(record.get(field.name));
+            }
+            else if (
+                field.type === 'multipleSelects'
+            ) {
+                $('#' + getIdOfField(field)).val(record.get(field.name));
+            } else if (
+                field.type === 'checkbox'
+            ) {
+                $('#' + getIdOfField(field)).prop('checked', record.get(field.name));
+            } else if (
+                field.type === 'lastModifiedTime'
+            ) {
+                $('#' + getIdOfField(field)).val(convertTimeForInputWithUTCOffset(record.get(field.name)));
+            } else if (
+                field.type === 'createdTime'
+            ) {
+                $('#' + getIdOfField(field)).val(convertTimeForInputWithUTCOffset(record.get(field.name)));
+            } else if (
+                field.type === 'dateTime'
+            ) {
+                $('#' + getIdOfField(field)).val(convertTimeForInputWithUTCOffset(record.get(field.name)));
+            } else if (
+                field.type === 'multipleAttachments'
+            ) {
+                $('#' + getIdOfField(field)).val(record.get(field.name));
+            }
+        }
         window.scrollTo(0, 0);
     }
 
