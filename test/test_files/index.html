@@ -24,7 +24,7 @@
         </div>
         <br>
         <button id='buttonToCreateArtist'>Create</button>
-        <button id="buttonToUpdateArtist">Update</button>
+        <button id="buttonToUpdateRecord">Update</button>
         <button id="buttonToClearFieldSet">Clear</button>
     </fieldset>
     <hr />
@@ -566,7 +566,7 @@
         });
     };
 
-    var updateArtist = function () {
+    var updateRecord = function () {
         // generate updated record from inputs
         var updatedRecord = {}
         for (var i = 0; i < tableFields.length; i++) {
@@ -609,8 +609,8 @@
             );
     };
 
-    $('#buttonToUpdateArtist').click(function () {
-        updateArtist();
+    $('#buttonToUpdateRecord').click(function () {
+        updateRecord();
     });
 
 
@@ -618,7 +618,7 @@
     var clearFieldSet = function () {
         $('#operationTypeUpdate').hide();
         $('#operationTypeCreate').show();
-        $('#buttonToUpdateArtist').hide();
+        $('#buttonToUpdateRecord').hide();
         $('#buttonToCreateArtist').show();
         selectedRecordId = null;
         $('#recordId').text('');
@@ -696,7 +696,7 @@
     var editRecord = function (record) {
         $('#operationTypeUpdate').show();
         $('#operationTypeCreate').hide();
-        $('#buttonToUpdateArtist').show();
+        $('#buttonToUpdateRecord').show();
         $('#buttonToCreateArtist').hide();
         selectedRecordId = record.getId();
         $('#recordId').text(selectedRecordId);
