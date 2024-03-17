@@ -177,6 +177,158 @@
         padding-inline: 8px;
 
     }
+
+    .neutralLight1 {
+        background-color: rgb(250, 250, 250);
+    }
+
+    .neutralLight2 {
+        background-color: rgb(242, 242, 242);
+    }
+
+    .neutralLight3 {
+        background-color: rgb(232, 232, 232);
+    }
+
+    .neutralLight4 {
+        background-color: rgb(224, 224, 224);
+    }
+
+    .opacityLighten1 {
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .opacityLighten2 {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .opacityLighten3 {
+        background-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .opacityLighten4 {
+        background-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .blueLight1 {
+        background-color: rgb(160, 198, 255);
+    }
+
+    .blueLight2 {
+        background-color: rgb(209, 226, 255);
+    }
+
+    .blueLight3 {
+        background-color: rgb(241, 245, 255);
+    }
+
+    .cyanLight1 {
+        background-color: rgb(136, 219, 255);
+    }
+
+    .cyanLight2 {
+        background-color: rgb(196, 236, 255);
+    }
+
+    .cyanLight3 {
+        background-color: rgb(227, 250, 253);
+    }
+
+    .tealLight1 {
+        background-color: rgb(116, 235, 225);
+    }
+
+    .tealLight2 {
+        background-color: rgb(193, 245, 240);
+    }
+
+    .tealLight3 {
+        background-color: rgb(228, 251, 251);
+    }
+
+    .greenLight1 {
+        background-color: rgb(154, 224, 149);
+    }
+
+    .greenLight2 {
+        background-color: rgb(207, 245, 209);
+    }
+
+    .greenLight3 {
+        background-color: rgb(230, 252, 232);
+    }
+
+    .yellowLight1 {
+        background-color: rgb(255, 214, 107);
+    }
+
+    .yellowLight2 {
+        background-color: rgb(255, 234, 182);
+    }
+
+    .yellowLight3 {
+        background-color: rgb(255, 246, 221);
+    }
+
+    .orangeLight1 {
+        background-color: rgb(255, 182, 142);
+    }
+
+    .orangeLight2 {
+        background-color: rgb(255, 224, 204);
+    }
+
+    .orangeLight3 {
+        background-color: rgb(255, 236, 227);
+    }
+
+    .redLight1 {
+        background-color: rgb(255, 166, 193);
+    }
+
+    .redLight2 {
+        background-color: rgb(255, 212, 224);
+    }
+
+    .redLight3 {
+        background-color: rgb(255, 242, 250);
+    }
+
+    .pinkLight1 {
+        background-color: rgb(247, 151, 239);
+    }
+
+    .pinkLight2 {
+        background-color: rgb(250, 210, 252);
+    }
+
+    .pinkLight3 {
+        background-color: rgb(255, 241, 255);
+    }
+
+    .purpleLight1 {
+        background-color: rgb(191, 174, 252);
+    }
+
+    .purpleLight2 {
+        background-color: rgb(224, 218, 253);
+    }
+
+    .purpleLight3 {
+        background-color: rgb(252, 243, 255);
+    }
+
+    .grayLight1 {
+        background-color: rgb(196, 199, 205);
+    }
+
+    .grayLight2 {
+        background-color: rgb(229, 233, 240);
+    }
+
+    .grayLight3 {
+        background-color: rgb(242, 244, 248);
+    }
 </style>
 
 <script>
@@ -461,7 +613,7 @@
             console.log(rec)
 
             console.log(rec?.map(r => field?.options?.choices?.find(c => c.name === r)?.color))
-            var cell = $('<td>').append($('<ul>').append(rec?.map(r => $(`<li class="option" style="background-color:light${colorMap(field?.options?.choices?.find(c => c.name === r)?.color)};border-radius:1000px;padding-inline:8px;">`).text(r))))
+            var cell = $('<td>').append($('<ul>').append(rec?.map(r => $(`<li class="option ${field?.options?.choices?.find(c => c.name === r)?.color}">`).text(r))))
             return cell
         } else if (
             field.type === 'checkbox'
