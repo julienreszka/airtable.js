@@ -376,9 +376,13 @@
 
     var renderFieldInput = function (field) {
         if (field.type === "singleLineText") {
-            return $('<input>').attr('type', 'text').attr('id', getIdOfField(field)).attr('placeholder', field.name);
+            return $('<input>').attr('type', 'text')
+                .attr('id', getIdOfField(field))
+                .attr('placeholder', field.name);
         } else if (field.type === "multilineText") {
-            return $('<textarea>').attr('id', getIdOfField(field)).attr('placeholder', field.name);
+            return $('<textarea>')
+                .attr('id', getIdOfField(field))
+                .attr('placeholder', field.name);
         } else if (field.type === "multipleSelects") {
             return $('<select>')
                 .attr('id', getIdOfField(field))
@@ -387,11 +391,21 @@
                     field.options.choices.length
                 )
         } else if (field.type === "checkbox") {
-            return $('<span>').attr('class', 'checkbox-wrapper').append($('<input>').attr('type', 'checkbox').attr('id', getIdOfField(field))).append($('<label>').attr('for', getIdOfField(field)).text(field.name));
+            return $('<span>')
+                .attr('class', 'checkbox-wrapper')
+                .append($('<input>')
+                    .attr('type', 'checkbox')
+                    .attr('id', getIdOfField(field)))
+                .append($('<label>')
+                    .attr('for', getIdOfField(field)).text(field.name));
         } else if (field.type === "lastModifiedTime") {
             var div = $('<div class="datetime-local-wrapper">');
-            var label = $('<label>').attr('for', getIdOfField(field)).text(field.name);
-            var input = $('<input>').attr('type', 'datetime-local').attr('id', getIdOfField(field)).attr('disabled', true);
+            var label = $('<label>')
+                .attr('for', getIdOfField(field)).text(field.name);
+            var input = $('<input>')
+                .attr('type', 'datetime-local')
+                .attr('id', getIdOfField(field))
+                .attr('disabled', true);
 
             div.append(label);
             div.append(input);
@@ -399,8 +413,12 @@
             return div;
         } else if (field.type === "createdTime") {
             var div = $('<div class="datetime-local-wrapper">');
-            var label = $('<label>').attr('for', getIdOfField(field)).text(field.name);
-            var input = $('<input>').attr('type', 'datetime-local').attr('id', getIdOfField(field)).attr('disabled', true);
+            var label = $('<label>')
+                .attr('for', getIdOfField(field))
+                .text(field.name);
+            var input = $('<input>').attr('type', 'datetime-local')
+                .attr('id', getIdOfField(field))
+                .attr('disabled', true);
 
             div.append(label);
             div.append(input);
@@ -613,12 +631,21 @@
             console.log(rec)
 
             console.log(rec?.map(r => field?.options?.choices?.find(c => c.name === r)?.color))
-            var cell = $('<td>').append($('<ul>').append(rec?.map(r => $(`<li class="option ${field?.options?.choices?.find(c => c.name === r)?.color}">`).text(r))))
+            var cell = $('<td>')
+                .append($('<ul>')
+                    .append(rec
+                        ?.map(r => $(`<li class="option ${field?.options?.choices?.find(c => c.name === r)?.color}">`).text(r))
+                    )
+                )
             return cell
         } else if (
             field.type === 'checkbox'
         ) {
-            var cell = $('<td>').append($('<input>').attr('type', 'checkbox').prop('checked', record.get(field.name)).prop('disabled', true));
+            var cell = $('<td>')
+                .append($('<input>')
+                    .attr('type', 'checkbox')
+                    .prop('checked', record.get(field.name))
+                    .prop('disabled', true));
             return cell
         } else if (
             field.type === 'lastModifiedTime'
