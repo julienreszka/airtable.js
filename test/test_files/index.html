@@ -161,6 +161,22 @@
         display: flex;
         gap: 10px;
     }
+
+    ul {
+        padding: 0px;
+        margin: 0px;
+
+        margin-left: 0;
+        border-radius: 1000px;
+        list-style: none;
+        display: grid;
+        gap: 4px;
+    }
+
+    li.option {
+        padding-inline: 8px;
+
+    }
 </style>
 
 <script>
@@ -417,6 +433,16 @@
         );
     }
 
+    const colorMap = function (inputString) {
+        for (let i = 0; i < inputString.length; i++) {
+            if (inputString[i] === inputString[i].toUpperCase()) {
+                return inputString.substring(0, i);
+            }
+        }
+        return inputString; // Return the whole string if no uppercase letter found
+    }
+
+
     const renderCell = function (record, field) {
         if (field.type === 'singleLineText') {
             var cell = $('<td>').text(record.get(field.name));
@@ -431,7 +457,11 @@
         else if (
             field.type === 'multipleSelects'
         ) {
-            var cell = $('<td>').append($('<ul>').append(record.get(field.name)?.map(g => $('<li>').text(g))))
+            var rec = record.get(field.name);
+            console.log(rec)
+
+            console.log(rec?.map(r => field?.options?.choices?.find(c => c.name === r)?.color))
+            var cell = $('<td>').append($('<ul>').append(rec?.map(r => $(`<li class="option" style="background-color:light${colorMap(field?.options?.choices?.find(c => c.name === r)?.color)};border-radius:1000px;padding-inline:8px;">`).text(r))))
             return cell
         } else if (
             field.type === 'checkbox'
