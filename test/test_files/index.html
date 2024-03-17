@@ -602,15 +602,6 @@
         );
     }
 
-    const colorMap = function (inputString) {
-        for (let i = 0; i < inputString.length; i++) {
-            if (inputString[i] === inputString[i].toUpperCase()) {
-                return inputString.substring(0, i);
-            }
-        }
-        return inputString; // Return the whole string if no uppercase letter found
-    }
-
 
     const renderCell = function (record, field) {
         if (field.type === 'singleLineText') {
