@@ -4,6 +4,7 @@
 <head>
     <script src="https://code.jquery.com/jquery-1.12.2.min.js"></script>
     <script src="airtable.browser.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body>
@@ -179,6 +180,10 @@
     }
 
     thead {
+        position: -webkit-sticky;
+        position: -moz-sticky;
+        position: -ms-sticky;
+        position: -o-sticky;
         position: sticky;
         top: 0;
         background-color: #fff;
@@ -208,6 +213,10 @@
 
     td:nth-of-type(1),
     th:nth-of-type(1) {
+        position: -webkit-sticky;
+        position: -moz-sticky;
+        position: -ms-sticky;
+        position: -o-sticky;
         position: sticky;
         background: lightgoldenrodyellow;
         left: 0;
